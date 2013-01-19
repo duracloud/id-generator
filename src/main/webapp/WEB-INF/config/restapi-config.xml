@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+  <!--Id Service-->
+  <jaxrs:server id="idServer" address="/id">
+    <jaxrs:serviceBeans>
+      <ref bean="initService"/>
+      <ref bean="idService"/>
+    </jaxrs:serviceBeans>
+    <jaxrs:providers>
+      <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+      <bean
+        class="org.duracloud.id.generator.error.IdGeneratorExceptionMapper"/>
+    </jaxrs:providers>
+  </jaxrs:server>
+
+  <bean id="initService"
+        class="org.duracloud.id.generator.rest.impl.AppInitImpl">
+    <constructor-arg ref="idService"/>
+  </bean>
+
+  <bean id="idService"
+        class="org.duracloud.id.generator.rest.impl.IdGeneratorImpl">
+    <constructor-arg ref="ldap"/>
+  </bean>
+
+</beans>
